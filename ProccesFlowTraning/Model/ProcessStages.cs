@@ -7,17 +7,12 @@ namespace ProccesFlowTraning.Models
     {
         [Key]
         public int? ProcessStagesId { get; set; }
-
-
         public int? ProcessId { get; set; }
         [ForeignKey("ProcessId")]
         public Process? Process { get; set; }
-
-
         public int? StageId { get; set; }
         [ForeignKey("StageId")]
         public Stage? Stage { get; set; }
-
         public int? Order { get; set; }
         public int? Next { get; set; }
 

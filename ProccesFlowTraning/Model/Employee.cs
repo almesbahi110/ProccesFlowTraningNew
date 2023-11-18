@@ -1,26 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
 namespace ProccesFlowTraning.Models
 {
-    public class Employee
+    public  class Employee : EmployeeDepartment
+    {
+        public string Department { get; set; }  
+    }
+    public abstract class EmployeeDepartment
     {
         [Key]
-        public String? EmployeeId { get; set; }
+        public int EmployeeId { get; set; }
         public DateTime? Birthdate { get; set; }
-
-        [EnumDataType(typeof(Gender))]
-        public Gender? StateGender { get; set; }
-       // [Required]
-        public string? EmployeeName { get; set; }
-       
-        public String? PhoneNumber { get; set; }
-
-        [EnumDataType(typeof(StateActive))]
+        public Gender? Gender { get; set; }
+        public string EmployeeName { get; set; }
+        public string PhoneNumber { get; set; }
         public StateActive? EmployeeState { get; set; }
-        public Employee()
+        protected EmployeeDepartment()
         {
-            this.EmployeeState = StateActive.Enable;
+            EmployeeState = StateActive.Enable;
         }
     }
 }

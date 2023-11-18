@@ -10,10 +10,10 @@ namespace ProccesFlowTraning.Models
         public string? StageName { get; set; }
         public string? title { get; set; }
         public string? description { get; set; }
+        [ForeignKey("EmployeeId")]
+        public int? EmployeeId { get; set; }
 
-        public String? EmployeeId { get; set; }
-
-     [ForeignKey("EmployeeId")]
+    
       public Employee? Employee { get; set; }
 
 

@@ -1,61 +1,119 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations;
 using ProccesFlowTraning.Data;
+using ProccesFlowTraning.Business.Abstract;
+using Microsoft.AspNetCore.Http.HttpResults;
+using ProccesFlowTraning.Dtos.PostDTO;
 using ProccesFlowTraning.Models;
 
-
-namespace ProccesFlowTraning.Controllers
+namespace BloggingApis.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class StageController : ControllerBase
     {
-
         private readonly SmartFlowDbContext _context;
-        public StageController(SmartFlowDbContext cont)
-        {
-            _context = cont;
-        }
-        [HttpGet("All")]
-        public async Task<ActionResult<List<Stage>>> GetAllStage()
-        {
-            return await _context.Stages.Include(a=>a.Employee).ToListAsync();
-        }
-       
-        [HttpPost]
-        public async Task<ActionResult> PostData(Stage data)
-        {
-            var (status, message) = ValidateStage(data);
+        private readonly IStageService _stageService;
+        private readonly ILogger<StageController> _logger;
 
-            if (status == true)
+
+        public StageController(SmartFlowDbContext cont, IStageService stageService, ILogger<StageController> logger)
+        {
+     
+            _context = cont;
+            _stageService = stageService;
+            _logger = logger;
+        }
+   
+      
+        [HttpGet]
+        [Route("GetAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            try
             {
-                _context.Stages.Add(data);
-                await _context.SaveChangesAsync();
-                return Ok(message);
+          
+            var (status, message) = await _stageService.GetAll();
+            if (status == 0)
+            {
+                return BadRequest(message);
+            }
+            return Ok(message);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetById")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                var data = await _stageService.GetById(id);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var (state, massage) =await _stageService.Delete(id);
+            if (state == 0)
+            {
+                return Ok(massage);
+            }
+            return Ok(massage);
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> PostData(StageDto data)
+        {
+          var (state,massage)=await _stageService.PostData(data);
+            if (state == 0)
+            {
+                return Ok(massage); 
             }
             else
             {
-                return Ok(message);
+                return BadRequest(massage   );
             }
+
+         
         }
 
-        private (bool, String) ValidateStage(Stage? stage)
+
+        [HttpPut]
+        public async Task<ActionResult> PutData(Stage data,int id)
         {
-            if (stage is null)
-                return (false, "لا يمكن ان يكون الموظف خالياً");
+            var (state, massage) = await _stageService.PutData(data,id);
+            if (state == 0)
+            {
+                return BadRequest(massage);
+            }
+            else
+            {
+                return Ok(massage);
+            }
 
-            if (string.IsNullOrEmpty(stage.StageName))
-                return (false, "يجب ان تكتب اسم المرحله");
 
-            if (string.IsNullOrEmpty(stage.title))
-                return (false, "يجب كتابه عنوان المرحله");
-            if (string.IsNullOrEmpty(stage.EmployeeId))
-                return (false, "يجب كتابه رقم الموظف المرتبط بهذه المرحله");
-            if (string.IsNullOrEmpty(stage.description))
-                return (false, "يجب كتابه وصف هذه المرحله");
-
-            return (true, "تم اضافه المرحله بنجاح");
         }
+
+
     }
 }

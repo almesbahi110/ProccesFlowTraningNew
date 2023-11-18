@@ -1,55 +1,119 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations;
 using ProccesFlowTraning.Data;
+using ProccesFlowTraning.Business.Abstract;
+using Microsoft.AspNetCore.Http.HttpResults;
+using ProccesFlowTraning.Dtos.PostDTO;
 using ProccesFlowTraning.Models;
-namespace ProccesFlowTraning.Controllers
+
+namespace BloggingApis.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class ProcessController : ControllerBase
     {
-
         private readonly SmartFlowDbContext _context;
-        public ProcessController(SmartFlowDbContext cont)
-        {
-            _context = cont;
-        }
-        [HttpGet("All")]
-        public async Task<ActionResult<List<Process>>> GetAllProcess()
-        {
-            return await _context.Processes.ToListAsync();
-        }
-       
-        [HttpPost]
-        public async Task<ActionResult> PostData(Process data)
-        {
-            var (status, message) = ValidateProcess(data);
+        private readonly IProcessService _processService;
+        private readonly ILogger<StageController> _logger;
 
-            if (status == true)
+
+        public ProcessController(SmartFlowDbContext cont, IProcessService processService, ILogger<StageController> logger)
+        {
+     
+            _context = cont;
+            _processService = processService;
+            _logger = logger;
+        }
+   
+      
+        [HttpGet]
+        [Route("GetAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            try
             {
-                _context.Processes.Add(data);
-                await _context.SaveChangesAsync();
-                return Ok(message);
+          
+            var (status, message) = await _processService.GetAll();
+            if (status == 0)
+            {
+                return BadRequest(message);
+            }
+            return Ok(message);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetById")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                var data = await _processService.GetById(id);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var (state, massage) =await _processService.Delete(id);
+            if (state == 0)
+            {
+                return Ok(massage);
+            }
+            return Ok(massage);
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> PostData(ProcessDto data)
+        {
+          var (state,massage)=await _processService.PostData(data);
+            if (state == 0)
+            {
+                return Ok(massage); 
             }
             else
             {
-                return Ok(message);
+                return BadRequest(massage   );
             }
-          
-          
+
+         
         }
-        private (bool, String) ValidateProcess(Process? process)
+
+
+        [HttpPut]
+        public async Task<ActionResult> PutData(Process data,int id)
         {
-            if (process is null)
-                return (false, "لا يمكن ان يكون الموظف خالياً");
+            var (state, massage) = await _processService.PutData(data,id);
+            if (state == 0)
+            {
+                return BadRequest(massage);
+            }
+            else
+            {
+                return Ok(massage);
+            }
 
-            if (string.IsNullOrEmpty(process.ProcessName))
-                return (false, "يجب ان تكتب اسم العملية");
 
-            if (string.IsNullOrEmpty(process.Instructions))
-                return (false, "يجب كتابه تعليمة العملية");
-
-            return (true, "تم اضافه العملية بنجاح");
         }
+
+
     }
 }

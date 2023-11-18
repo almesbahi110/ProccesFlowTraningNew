@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProccesFlowTraning.Migrations
 {
     /// <inheritdoc />
-    public partial class m1 : Migration
+    public partial class saawam : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,12 +15,14 @@ namespace ProccesFlowTraning.Migrations
                 name: "Employees",
                 columns: table => new
                 {
-                    EmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Department = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Birthdate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    StateGender = table.Column<int>(type: "int", nullable: true),
-                    EmployeeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmployeeState = table.Column<int>(type: "int", nullable: true)
+                    Gender = table.Column<int>(type: "int", nullable: true),
+                    EmployeeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmployeeState = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,7 +53,7 @@ namespace ProccesFlowTraning.Migrations
                     StageName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    EmployeeId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -100,15 +102,16 @@ namespace ProccesFlowTraning.Migrations
                     ProcessRequestState = table.Column<int>(type: "int", nullable: true),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RequestDescraption = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    EmployeeId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmployeeId1 = table.Column<int>(type: "int", nullable: true),
                     ProcessStagesId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProcessRequests", x => x.ProcessRequestId);
                     table.ForeignKey(
-                        name: "FK_ProcessRequests_Employees_EmployeeId",
-                        column: x => x.EmployeeId,
+                        name: "FK_ProcessRequests_Employees_EmployeeId1",
+                        column: x => x.EmployeeId1,
                         principalTable: "Employees",
                         principalColumn: "EmployeeId");
                     table.ForeignKey(
@@ -119,9 +122,9 @@ namespace ProccesFlowTraning.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProcessRequests_EmployeeId",
+                name: "IX_ProcessRequests_EmployeeId1",
                 table: "ProcessRequests",
-                column: "EmployeeId");
+                column: "EmployeeId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProcessRequests_ProcessStagesId",

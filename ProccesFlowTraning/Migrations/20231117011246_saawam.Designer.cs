@@ -12,8 +12,8 @@ using ProccesFlowTraning.Data;
 namespace ProccesFlowTraning.Migrations
 {
     [DbContext(typeof(SmartFlowDbContext))]
-    [Migration("20231111073817_m1")]
-    partial class m1
+    [Migration("20231117011246_saawam")]
+    partial class saawam
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,23 +27,32 @@ namespace ProccesFlowTraning.Migrations
 
             modelBuilder.Entity("ProccesFlowTraning.Models.Employee", b =>
                 {
-                    b.Property<string>("EmployeeId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("EmployeeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeId"));
 
                     b.Property<DateTime?>("Birthdate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("EmployeeName")
+                    b.Property<string>("Department")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EmployeeState")
+                    b.Property<string>("EmployeeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EmployeeState")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Gender")
                         .HasColumnType("int");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("StateGender")
-                        .HasColumnType("int");
 
                     b.HasKey("EmployeeId");
 
@@ -87,7 +96,10 @@ namespace ProccesFlowTraning.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EmployeeId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("EmployeeId1")
+                        .HasColumnType("int");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
@@ -103,7 +115,7 @@ namespace ProccesFlowTraning.Migrations
 
                     b.HasKey("ProcessRequestId");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("EmployeeId1");
 
                     b.HasIndex("ProcessStagesId");
 
@@ -147,8 +159,8 @@ namespace ProccesFlowTraning.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("StageId"));
 
-                    b.Property<string>("EmployeeId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("StageName")
                         .HasColumnType("nvarchar(max)");
@@ -170,7 +182,7 @@ namespace ProccesFlowTraning.Migrations
                 {
                     b.HasOne("ProccesFlowTraning.Models.Employee", "Employee")
                         .WithMany()
-                        .HasForeignKey("EmployeeId");
+                        .HasForeignKey("EmployeeId1");
 
                     b.HasOne("ProccesFlowTraning.Models.ProcessStages", "ProcessStages")
                         .WithMany()

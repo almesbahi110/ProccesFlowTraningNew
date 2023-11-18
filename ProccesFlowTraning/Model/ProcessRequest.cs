@@ -21,7 +21,7 @@ namespace ProccesFlowTraning.Models
         public string? RequestDescraption { get; set; }
 
         [ForeignKey("EmployeeId")]
-        public string? EmployeeId { get; set; }
+        public int? EmployeeId { get; set; }
    public Employee? Employee { get; set; }       
 
       [ForeignKey("ProcessStagesId")]
