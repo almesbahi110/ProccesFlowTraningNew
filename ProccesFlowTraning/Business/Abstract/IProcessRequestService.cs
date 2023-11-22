@@ -5,7 +5,7 @@ namespace ProccesFlowTraning.Business.Abstract
 {
     public interface IProcessRequestService
     {
-        Task<(int, List<ProcessRequest>)> GetAll();
+        Task<IQueryable> GetAll();
         Task<ProcessRequest> GetById(int id);
         Task<(int,String)> Delete(int id);
         Task<(int,String)> PostData(ProcessRequestDto data);

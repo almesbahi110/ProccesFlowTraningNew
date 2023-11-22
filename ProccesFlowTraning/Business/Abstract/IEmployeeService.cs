@@ -6,7 +6,7 @@ namespace ProccesFlowTraning.Business.Abstract
 {
     public interface IEmployeeService
     {
-        Task<(int, List<Employee>)> GetAll();
+        Task<IQueryable> GetAll();
         Task<Employee> GetById(int id);
         Task<(int,String)> Delete(int id);
         Task<(int,String)> PostData(EmployeeDto data);

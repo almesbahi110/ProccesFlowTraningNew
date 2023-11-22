@@ -16,20 +16,18 @@ namespace ProccesFlowTraning.Business.Implement
 {
     public class ProcessStageService : IProcessStageService
     {
-        private readonly IConfiguration _configuration;
         private readonly SmartFlowDbContext _context;
-        public ProcessStageService(SmartFlowDbContext cont, IConfiguration configuration)
+        public ProcessStageService(SmartFlowDbContext cont)
         {
             _context = cont;
 
-            _configuration = configuration;
 
         }
 
 
-        public async Task<(int, List<ProcessStages>)> GetAll()
+        public async Task<IQueryable> GetAll()
         {
-                return (1, await _context.ProcessStages.ToListAsync());
+                return ( _context.ProcessStages.AsQueryable());
         }
 
         public async Task<ProcessStages> GetById(int id)

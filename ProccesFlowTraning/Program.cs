@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using ProccesFlowTraning.Business.Abstract;
 using ProccesFlowTraning.Business.Implement;
@@ -14,7 +15,10 @@ builder.Services.AddTransient<IProcessStageService, ProcessStageService>();
 builder.Services.AddDbContext<SmartFlowDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddOData(option =>
+{
+    option.Select().Filter().Count().OrderBy();
+});
 
 
 builder.Services.AddEndpointsApiExplorer();

@@ -10,27 +10,28 @@ using ProccesFlowTraning.Business.Abstract;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProccesFlowTraning.Dtos.PostDTO;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace ProccesFlowTraning.Business.Implement
 {
-    public class StageService : IStageService
+    public class StageService : IStageService, IStageByIdEmployeeService
     {
-        private readonly IConfiguration _configuration;
         private readonly SmartFlowDbContext _context;
-        //  private readonly EmailConfiguration _emailConfig;
-        //public AuthService(EmailConfiguration emailConfig) => _emailConfig = emailConfig;
-        public StageService(SmartFlowDbContext cont, IConfiguration configuration)
+        public StageService(SmartFlowDbContext cont)
         {
             _context = cont;
-
-            _configuration = configuration;
-
         }
-
-
-        public async Task<(int, List<Stage>)> GetAll()
+        public async Task<(int,List<Stage>)> GetAllStageByIdEmployee(int id)
         {
-                return (1, await _context.Stages.Include(a=>a.Employee).ToListAsync());
+           
+            return (1,await _context.Stages.Where(w=>w.EmployeeId==id).ToListAsync());
+        }
+        [EnableQuery]
+        [HttpGet]
+        public async Task<IQueryable> GetAll()
+        {
+            //   return (1, await _context.Stages.Include(a=>a.Employee).ToListAsync());
+            return (_context.Stages.AsQueryable());
         }
 
         public async Task<Stage> GetById(int id)

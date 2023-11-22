@@ -5,7 +5,7 @@ namespace ProccesFlowTraning.Business.Abstract
 {
     public interface IProcessStageService
     {
-        Task<(int, List<ProcessStages>)> GetAll();
+        Task<IQueryable> GetAll();
         Task<ProcessStages> GetById(int id);
         Task<(int,String)> Delete(int id);
         Task<(int,String)> PostData(ProcessStagesDto data);

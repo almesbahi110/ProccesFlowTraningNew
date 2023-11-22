@@ -9,8 +9,9 @@ using ProccesFlowTraning.Business.Abstract;
 using Microsoft.AspNetCore.Http.HttpResults;
 using ProccesFlowTraning.Dtos.PostDTO;
 using ProccesFlowTraning.Models;
+using Microsoft.AspNetCore.OData.Query;
 
-namespace BloggingApis.Controllers
+namespace ProccesFlowTraning.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -18,36 +19,31 @@ namespace BloggingApis.Controllers
     {
         private readonly SmartFlowDbContext _context;
         private readonly IProcessRequestService _processRequestService;
-        private readonly ILogger<StageController> _logger;
 
 
-        public ProcessRequestController(SmartFlowDbContext cont, IProcessRequestService processRequestService, ILogger<StageController> logger)
+        public ProcessRequestController(SmartFlowDbContext cont, IProcessRequestService processRequestService)
         {
      
             _context = cont;
              _processRequestService= processRequestService;
-            _logger = logger;
         }
    
       
         [HttpGet]
-        [Route("GetAll")]
+        [EnableQuery]
         public async Task<IActionResult> GetAll()
         {
             try
             {
           
-            var (status, message) = await _processRequestService.GetAll();
-            if (status == 0)
-            {
-                return BadRequest(message);
-            }
-            return Ok(message);
+            var res = await _processRequestService.GetAll();
+           
+            return Ok(res);
 
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+               
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -63,7 +59,7 @@ namespace BloggingApis.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+               
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }

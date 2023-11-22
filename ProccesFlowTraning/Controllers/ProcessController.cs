@@ -9,8 +9,9 @@ using ProccesFlowTraning.Business.Abstract;
 using Microsoft.AspNetCore.Http.HttpResults;
 using ProccesFlowTraning.Dtos.PostDTO;
 using ProccesFlowTraning.Models;
+using Microsoft.AspNetCore.OData.Query;
 
-namespace BloggingApis.Controllers
+namespace ProccesFlowTraning.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -18,38 +19,26 @@ namespace BloggingApis.Controllers
     {
         private readonly SmartFlowDbContext _context;
         private readonly IProcessService _processService;
-        private readonly ILogger<StageController> _logger;
 
 
-        public ProcessController(SmartFlowDbContext cont, IProcessService processService, ILogger<StageController> logger)
+        public ProcessController(SmartFlowDbContext cont, IProcessService processService)
         {
      
             _context = cont;
             _processService = processService;
-            _logger = logger;
         }
    
       
         [HttpGet]
-        [Route("GetAll")]
+        [EnableQuery]
         public async Task<IActionResult> GetAll()
         {
-            try
-            {
-          
-            var (status, message) = await _processService.GetAll();
-            if (status == 0)
-            {
-                return BadRequest(message);
-            }
-            return Ok(message);
+            
+            var result= await _processService.GetAll();
+         
+            return Ok(result);
 
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+          
         }
 
         [HttpGet]
@@ -63,7 +52,6 @@ namespace BloggingApis.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }

@@ -16,22 +16,16 @@ namespace ProccesFlowTraning.Business.Implement
 {
     public class EmployeeService : IEmployeeService
     {
-        private readonly IConfiguration _configuration;
         private readonly SmartFlowDbContext _context;
-        //  private readonly EmailConfiguration _emailConfig;
-        //public AuthService(EmailConfiguration emailConfig) => _emailConfig = emailConfig;
-        public EmployeeService(SmartFlowDbContext cont, IConfiguration configuration)
+        public EmployeeService(SmartFlowDbContext cont)
         {
             _context = cont;
-
-            _configuration = configuration;
-
         }
 
 
-        public async Task<(int, List<Employee>)> GetAll()
+        public async Task<IQueryable> GetAll()
         {
-                return (1, await _context.Employees.ToListAsync());
+                return (_context.Employees.AsQueryable());
         }
 
         public async Task<Employee> GetById(int id)

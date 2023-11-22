@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProccesFlowTraning.Data;
 
@@ -11,9 +12,11 @@ using ProccesFlowTraning.Data;
 namespace ProccesFlowTraning.Migrations
 {
     [DbContext(typeof(SmartFlowDbContext))]
-    partial class SmartFlowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231121004601_sd1")]
+    partial class sd1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

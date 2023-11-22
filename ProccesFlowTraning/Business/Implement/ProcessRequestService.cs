@@ -15,20 +15,16 @@ namespace ProccesFlowTraning.Business.Implement
 {
     public class ProcessRequestService : IProcessRequestService
     {
-        private readonly IConfiguration _configuration;
         private readonly SmartFlowDbContext _context;
-              public ProcessRequestService(SmartFlowDbContext cont, IConfiguration configuration)
+              public ProcessRequestService(SmartFlowDbContext cont)
         {
             _context = cont;
-
-            _configuration = configuration;
-
         }
 
 
-        public async Task<(int, List<ProcessRequest>)> GetAll()
+        public async Task<IQueryable> GetAll()
         {
-                return (1, await _context.ProcessRequests.ToListAsync());
+                return ( _context.ProcessRequests.AsQueryable());
         }
 
         public async Task<ProcessRequest> GetById(int id)

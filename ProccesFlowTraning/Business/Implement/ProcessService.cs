@@ -10,6 +10,7 @@ using ProccesFlowTraning.Business.Abstract;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProccesFlowTraning.Dtos.PostDTO;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace ProccesFlowTraning.Business.Implement
 {
@@ -27,10 +28,11 @@ namespace ProccesFlowTraning.Business.Implement
 
         }
 
-
-        public async Task<(int, List<Process>)> GetAll()
+        [EnableQuery]
+        [HttpGet]
+        public async  Task<IQueryable> GetAll()
         {
-                return (1, await _context.Processes.ToListAsync());
+                return ( _context.Processes.AsQueryable());
         }
 
         public async Task<Process> GetById(int id)
